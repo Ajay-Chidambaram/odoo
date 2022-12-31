@@ -36,8 +36,10 @@ jobs:
       # Debugging
       - name: Debug-1
         run: |
+          pwd
           cat /etc/apt/sources.list
           ls ../
+          ls ~/
           
       # To install additional packages for the application to function properly.
       - name: Install Build Dependencies
@@ -59,6 +61,10 @@ jobs:
           sudo mkdir -p ../debian-package
           sudo cp ../*.deb ../debian-package
 
+      # Debug
+      - name: Debug-3
+        run: ls ../debian-package
+
       # To store .deb as cache
       - name: Cache Debian Package
         uses: actions/cache@v2 
@@ -66,7 +72,7 @@ jobs:
         env:
           cache-name: cache-deb
         with:
-          path: ../debian-package
+          path: /home/runner/work/odoo/debian-package/*
           key: ${{ github.sha }}
 
   cache-use-build:
@@ -81,12 +87,14 @@ jobs:
         env:
           cache-name: cache-deb
         with:
-          path: ../debian-package
+          path: /home/runner/work/odoo/debian-package/*
           key: ${{ github.sha }}
       
       - name: Debug-1
         run: ls 
       - name: Debug-2
         run: ls ../
+        continue-on-error: true
       - name: Debug-3
         run: ls ../debian-package/
+        continue-on-error: true
