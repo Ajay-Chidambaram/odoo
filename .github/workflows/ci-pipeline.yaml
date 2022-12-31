@@ -41,7 +41,9 @@ jobs:
           
       # To install additional packages for the application to function properly.
       - name: Install Build Dependencies
-        run: sudo apt build-dep odoo
+        run: |
+          sudo apt -y update
+          sudo apt -y build-dep odoo
 
       # To build the package
       - name: Build Package
