@@ -1,0 +1,90 @@
+name: CI
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    name: Build-Deb 
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+        
+      # Prerequisites for building debian package
+      - name: Prerequisites
+        run: |
+          sudo apt-get -y update
+          sudo apt-get -y install devscripts dpkg-dev 
+     
+      # To fetch source packages  
+      - name: sed command
+        run: sudo sed -i -e '/deb-src/s/^#//g' /etc/apt/sources.list
+     
+      # Debugging
+      - name: Debug-1
+        run: |
+          cat /etc/apt/sources.list
+          ls ../
+          
+      # To install additional packages for the application to function properly.
+      - name: Install Build Dependencies
+        run: sudo apt build-dep odoo
+
+      # To build the package
+      - name: Build Package
+        run: sudo debuild -b -uc -us
+
+      # Debug
+      - name: Debug-2
+        run: ls ../
+
+      # Copy .deb to Different folder
+      - name: Copy deb
+        run: |
+          sudo mkdir -p ../debian-package
+          sudo cp ../*.deb ../debian-package
+
+      # To store .deb as cache
+      - name: Cache Debian Package
+        uses: actions/cache@v2 
+        id: restore-build
+        env:
+          cache-name: cache-deb
+        with:
+          path: ../debian-package
+          key: ${{ github.sha }}
+
+  cache-use-build:
+    name: Re-use Cache
+    runs-on: ubuntu-latest
+    needs: [build]
+
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/cache@v2
+        id: restore-build
+        env:
+          cache-name: cache-deb
+        with:
+          path: ../debian-package
+          key: ${{ github.sha }}
+      
+      - name: Debug-1
+        run: ls 
+      - name: Debug-2
+        run: ls ../
+      - name: Debug-3
+        run: ls ../debian-package/
