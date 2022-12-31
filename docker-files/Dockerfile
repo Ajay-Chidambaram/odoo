@@ -64,10 +64,12 @@ RUN npm install -g rtlcss
 #       && rm -rf /var/lib/apt/lists/* odoo.deb
 
 ARG PACK_NAME=odoo_14.0.0+dfsg.2-1_all.deb
-COPY ./${PACK_NAME} ~/
+COPY ./${PACK_NAME} /
+RUN ls -lh /
+RUN ls -lh ~/ 
 RUN apt-get -y update \
-      &&  apt-get -y install --no-install-recommends ~/${PACK_NAME} \
-      && rm -rf /var/lib/apt/lists/* ~/${PACK_NAME}
+      &&  apt-get -y install --no-install-recommends /${PACK_NAME} \
+      && rm -rf /var/lib/apt/lists/* /${PACK_NAME}
 
 
 # Copy entrypoint script and Odoo configuration file
