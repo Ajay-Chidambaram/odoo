@@ -58,12 +58,11 @@ jobs:
       # Copy .deb to Different folder
       - name: Copy deb
         run: |
-          sudo mkdir -p ../debian-package
-          sudo cp ../*.deb ../debian-package
+          sudo cp ../*.deb ./docker-files/
 
       # Debug
       - name: Debug-3
-        run: ls ../debian-package
+        run: ls ./docker-files/
 
       # To store .deb as cache
       - name: Cache Debian Package
@@ -72,7 +71,7 @@ jobs:
         env:
           cache-name: cache-deb
         with:
-          path: /home/runner/work/odoo/debian-package/*
+          path: /home/runner/work/odoo/odoo/docker-files/*
           key: ${{ github.sha }}
 
   cache-use-build:
@@ -81,20 +80,24 @@ jobs:
     needs: [build]
 
     steps:
-      - uses: actions/checkout@v2
+      # - uses: actions/checkout@v2
       - uses: actions/cache@v2
         id: restore-build
         env:
           cache-name: cache-deb
         with:
-          path: /home/runner/work/odoo/debian-package/*
+          path: /home/runner/work/odoo/odoo/docker-files/*
           key: ${{ github.sha }}
       
       - name: Debug-1
         run: ls 
       - name: Debug-2
-        run: ls ../
+        run: ls ./docker-files
         continue-on-error: true
       - name: Debug-3
-        run: ls ../debian-package/
+        run: ls ../
         continue-on-error: true
+
+      # Docker Build 
+      - name: Docker Build
+        run: sudo docker build ./docker-files/ -t odoo:${{github.run_number}}
