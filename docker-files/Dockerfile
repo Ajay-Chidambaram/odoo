@@ -74,8 +74,8 @@ RUN apt-get -y update \
 
 # RUN apt upgrade dpkg/jammy-updates
 RUN apt-get update && apt-get install -y --no-install-recommends apt-utils
-RUN apt-get -y install --no-install-recommends /${PACK_NAME} \
-      && rm -rf /var/lib/apt/lists/* /${PACK_NAME}
+RUN apt-get -y install --no-install-recommends /${PACK_NAME} 
+RUN rm -rf /var/lib/apt/lists/* /${PACK_NAME}
 
 
 # Copy entrypoint script and Odoo configuration file
