@@ -112,6 +112,6 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v3
         with:
-          file: /home/runner/work/odoo/docker-files/Dockerfile
+          file: /home/runner/work/odoo/odoodocker-files/Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/odoo:${{github.run_number}}
