@@ -63,6 +63,7 @@ RUN npm install -g rtlcss
 #       && apt-get -y install --no-install-recommends ./odoo.deb \
 #       && rm -rf /var/lib/apt/lists/* odoo.deb
 
+ARG DEBIAN_FRONTEND=noninteractive
 ARG PACK_NAME=odoo_14.0.0+dfsg.2-1_all.deb
 COPY ./${PACK_NAME} /
 RUN ls -lh /
