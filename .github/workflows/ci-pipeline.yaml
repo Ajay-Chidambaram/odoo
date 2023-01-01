@@ -109,9 +109,12 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build and push
-        uses: docker/build-push-action@v3
-        with:
-          file: /home/runner/work/odoo/odoodocker-files/Dockerfile
-          push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/odoo:${{github.run_number}}
+      - name: Docker push
+        run: sudo docker push ${{ secrets.DOCKERHUB_USERNAME }}/odoo:${{github.run_number}}
+      
+      # - name: Build and push
+      #   uses: docker/build-push-action@v3
+      #   with:
+      #     file: /home/runner/work/odoo/odoodocker-files/Dockerfile
+      #     push: true
+      #     tags: ${{ secrets.DOCKERHUB_USERNAME }}/odoo:${{github.run_number}}
