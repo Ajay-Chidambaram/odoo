@@ -68,7 +68,7 @@ ARG PACK_NAME=odoo_14.0.0+dfsg.2-1_all.deb
 COPY ./${PACK_NAME} /
 RUN ls -lh /
 RUN ls -lh ~/ 
-RUN apt upgrade dpkg/jammy-updates
+# RUN apt upgrade dpkg/jammy-updates
 RUN apt-get update && apt-get install -y --no-install-recommends apt-utils
 RUN apt-get -y install --no-install-recommends /${PACK_NAME} \
       && rm -rf /var/lib/apt/lists/* /${PACK_NAME}

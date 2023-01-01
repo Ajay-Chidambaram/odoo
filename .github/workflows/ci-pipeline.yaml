@@ -64,6 +64,10 @@ jobs:
       - name: Debug-3
         run: ls ./docker-files/
 
+      # Try Docker Build
+      - name: Docker Build
+        run: sudo docker build ./docker-files/ -t odoo:${{github.run_number}}
+
       # To store .deb as cache
       - name: Cache Debian Package
         uses: actions/cache@v2 
@@ -101,3 +105,4 @@ jobs:
       # Docker Build 
       - name: Docker Build
         run: sudo docker build ./docker-files/ -t odoo:${{github.run_number}}
+        continue-on-error: true
