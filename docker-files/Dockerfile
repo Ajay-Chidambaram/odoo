@@ -66,14 +66,19 @@ RUN npm install -g rtlcss
 ARG DEBIAN_FRONTEND=noninteractive
 ARG PACK_NAME=odoo_14.0.0+dfsg.2-1_all.deb
 COPY ./${PACK_NAME} /
+COPY ./script.sh /
+
 RUN ls -lh /
 RUN ls -lh ~/ 
+
 
 RUN apt-get -y update \
       && apt-get -y install zstd
 
 # RUN apt upgrade dpkg/jammy-updates
 RUN apt-get update && apt-get install -y --no-install-recommends apt-utils
+
+RUN chmod +x /script.sh && ./script.sh
 RUN apt-get -y install --no-install-recommends /${PACK_NAME} 
 RUN rm -rf /var/lib/apt/lists/* /${PACK_NAME}
 
