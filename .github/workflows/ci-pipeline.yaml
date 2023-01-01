@@ -109,8 +109,10 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Docker push
-        run: sudo docker push ${{ secrets.DOCKERHUB_USERNAME }}/odoo:${{github.run_number}}
+      - name: Docker tag & push
+        run: |
+          sudo docker image tag odoo:${{github.run_number}} ${{ secrets.DOCKERHUB_USERNAME }}/odoo:${{github.run_number}}
+          sudo docker push ${{ secrets.DOCKERHUB_USERNAME }}/odoo:${{github.run_number}}
       
       # - name: Build and push
       #   uses: docker/build-push-action@v3
