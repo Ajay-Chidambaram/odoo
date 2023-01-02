@@ -82,7 +82,7 @@ jobs:
           path: /home/runner/work/odoo/odoo/manifest-files/*
           key: ${{ github.sha }}
 
-  cache-use-build:
+  Docker:
     name: Docker
     runs-on: ubuntu-latest
     needs: [build]
@@ -120,7 +120,7 @@ jobs:
           sudo docker image tag odoo:${{github.run_number}} ${{ secrets.DOCKERHUB_USERNAME }}/odoo:${{github.run_number}}
           sudo docker push ${{ secrets.DOCKERHUB_USERNAME }}/odoo:${{github.run_number}}
   
-  manifest-update:
+  deployment:
     name: Deployment
     runs-on: ubuntu-latest
     needs: [Docker]
