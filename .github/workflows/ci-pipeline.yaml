@@ -4,8 +4,6 @@ name: CI
 on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
-    paths-ignore:
-      - 'manifest/**'
     branches: [ "main" ]
 
   # Allows you to run this workflow manually from the Actions tab
@@ -111,3 +109,31 @@ jobs:
         run: |
           sudo docker image tag odoo:${{github.run_number}} ${{ secrets.DOCKERHUB_USERNAME }}/odoo:${{github.run_number}}
           sudo docker push ${{ secrets.DOCKERHUB_USERNAME }}/odoo:${{github.run_number}}
+  
+  manifest-update:
+    name: Manifest Update
+    runs-on: ubuntu-latest
+    needs: [cache-use-build]
+
+    steps:
+      - name: install yq
+        uses: mikefarah/yq@v4.15.1 
+
+      - name: update infra yaml file
+        run: |
+          cd manifest-files
+          yq e -i '.spec.template.spec.containers[0].image="${{ secrets.DOCKERHUB_USERNAME }}/odoo:${{github.run_number}}"' odoo-deployment.yaml
+          cat odoo-deployment.yaml
+
+      - name: push change
+        uses: dmnemec/copy_file_to_another_repo_action@main
+        # env:
+        #   API_TOKEN_GITHUB: ${{ secrets.API_TOKEN_GITHUB }}
+        with:
+          source_file: manifest-files/odoo-deployment.yaml
+          destination_repo: Ajay-Chidambaram/k8s-argocd
+          destination_branch: main
+          destination_folder: manifest-files
+          user_email: silambu.ajayk@gmail.com
+          user_name: Ajay-Chidambaram
+          commit_message: update image version ${{github.run_number}} in manifest yaml file
